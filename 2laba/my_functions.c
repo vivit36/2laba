@@ -102,7 +102,7 @@ void Input(struct Stack* stack, char *alfabet, int lenght_alf)
             stack_push(stack, xx);
         }
     }
-    printf("Pervy stack: ");
+    printf("Our expression in stack: ");
     stack_print(stack);
 }
 
