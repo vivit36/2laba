@@ -71,6 +71,7 @@ int priority(char znak)
 void Input(struct Stack* stack, char *alfabet, int lenght_alf)
 {
     char xx;
+    char last_symbol = ')';
 
     printf("Please enter the expression in the infix formula: \n");
     stack_push(stack, ')');
@@ -99,10 +100,26 @@ void Input(struct Stack* stack, char *alfabet, int lenght_alf)
                     xx = '(';
                 }
             }
+            if (((int)xx > 96) && ((int)last_symbol > 96))
+            {
+                printf("Error! Wrong expression! Two operands in a row!\n");
+                exit(1);
+            }
+            if (((xx == '+') || (xx == '-') || (xx == '*') || (xx == '/')) && ((last_symbol == '+') || (last_symbol == '-') || (last_symbol == '*') || (last_symbol == '/')))
+            {
+                printf("Error! Wrong expression! Two operators in a row!\n");
+                exit(1);
+            }
+            if (((xx == ')') && (last_symbol == '(')) || ((xx == '(') && (last_symbol == ')')))
+            {
+                printf("Error! Wrong expression! Two different brackets in a row!\n");
+                exit(1);
+            }
             stack_push(stack, xx);
+            last_symbol = xx;
         }
     }
-    printf("Our expression in stack: ");
+    printf("Expression in stack: ");
     stack_print(stack);
 }
 
