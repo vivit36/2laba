@@ -78,6 +78,17 @@ void Input(struct Stack* stack, char *alfabet, int lenght_alf)
 
     while (GetChar_of_formula(&xx)!= 0)
     {
+        if ((xx == '(') || (xx == ')'))
+        {
+            if (xx == '(')
+            {
+                xx = ')';
+            }
+            else
+            {
+                xx = '(';
+            }
+        }
         if (prinadleznost(xx, alfabet, lenght_alf) == -1)
         {
             printf("Please, enter only variables or signs of mathematical operations\n");
@@ -86,37 +97,52 @@ void Input(struct Stack* stack, char *alfabet, int lenght_alf)
             stack_empty(stack);
             printf("Please, repeat entering formula\n");
             stack_push(stack, ')');  
+            last_symbol = ')';
         }
         else
         {
-            if ((xx == '(') || (xx == ')'))
-            {
-                if (xx == '(')
-                {
-                    xx = ')';
-                }
-                else
-                {
-                    xx = '(';
-                }
-            }
+
             if (((int)xx > 96) && ((int)last_symbol > 96))
             {
                 printf("Error! Wrong expression! Two operands in a row!\n");
-                exit(1);
+                scanf_s("%*[^\n]");
+                scanf_s("%*c");
+                stack_empty(stack);
+                printf("Please, repeat entering formula\n");
+                stack_push(stack, ')');
+                last_symbol = ')';
             }
-            if (((xx == '+') || (xx == '-') || (xx == '*') || (xx == '/')) && ((last_symbol == '+') || (last_symbol == '-') || (last_symbol == '*') || (last_symbol == '/')))
+            else
             {
-                printf("Error! Wrong expression! Two operators in a row!\n");
-                exit(1);
+                if (((xx == '+') || (xx == '-') || (xx == '*') || (xx == '/')) && ((last_symbol == '+') || (last_symbol == '-') || (last_symbol == '*') || (last_symbol == '/')))
+                {
+                    printf("Error! Wrong expression! Two operators in a row!\n");
+                    scanf_s("%*[^\n]");
+                    scanf_s("%*c");
+                    stack_empty(stack);
+                    printf("Please, repeat entering formula\n");
+                    stack_push(stack, ')');
+                    last_symbol = ')';
+                }
+                else
+                {  
+                    if (((xx == ')') && (last_symbol == '(')) || ((xx == '(') && (last_symbol == ')')))
+                    {
+                        printf("Error! Wrong expression! Two different brackets in a row!\n");
+                        scanf_s("%*[^\n]");
+                        scanf_s("%*c");
+                        stack_empty(stack);
+                        printf("Please, repeat entering formula\n");
+                        stack_push(stack, ')');
+                        last_symbol = ')';
+                    }
+                    else
+                    {
+                            stack_push(stack, xx);
+                            last_symbol = xx;
+                    }
+                }
             }
-            if (((xx == ')') && (last_symbol == '(')) || ((xx == '(') && (last_symbol == ')')))
-            {
-                printf("Error! Wrong expression! Two different brackets in a row!\n");
-                exit(1);
-            }
-            stack_push(stack, xx);
-            last_symbol = xx;
         }
     }
     printf("Expression in stack: ");
@@ -152,6 +178,7 @@ int Conversion(struct Stack* stack1, struct Stack* stack2, struct Stack* stack3)
                     stack_delete(stack1);
                     stack_delete(stack2);
                     stack_delete(stack3);
+                    _CrtDumpMemoryLeaks();
                     exit(EXIT_FAILURE);
                 }
                 stack_push(stack3, promezhutok);
@@ -183,6 +210,7 @@ int Conversion(struct Stack* stack1, struct Stack* stack2, struct Stack* stack3)
             stack_delete(stack1);
             stack_delete(stack2);
             stack_delete(stack3);
+            _CrtDumpMemoryLeaks();
             exit(EXIT_FAILURE);
         }
         stack_push(stack3, promezhutok);
